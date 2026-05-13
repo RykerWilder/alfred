@@ -19,6 +19,10 @@ from tools.screenshot import take_screenshot
 
 load_dotenv()
 
+def load_system_prompt():
+    with open('./system_prompt.txt', 'r') as f:
+        return f.read().strip()
+
 
 MIC_INDEX = None
 TRIGGER_WORD = "alfred"
@@ -42,12 +46,11 @@ tools = [get_time, arp_scan_terminal, read_text_from_latest_image, duckduckgo_se
 
 
 # Tool-calling prompt
+system_prompt = load_system_prompt()
+
 prompt = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are Jarvis, an intelligent, conversational AI assistant. Your goal is to be helpful, friendly, and informative. You can respond in natural, human-like language and use tools when needed to answer questions more accurately. Always explain your reasoning simply when appropriate, and keep your responses conversational and concise.",
-        ),
+        ("system", system_prompt),
         ("human", "{input}"),
         ("placeholder", "{agent_scratchpad}"),
     ]
