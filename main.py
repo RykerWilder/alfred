@@ -38,7 +38,7 @@ mic = sr.Microphone(device_index=MIC_INDEX)
 
 
 # Initialize LLM
-llm = ChatOllama(model="qwen3:1.7b", reasoning=False)
+llm = ChatOllama(model=os.getenv("OLLAMA_MODEL"), reasoning=False)
 
 
 # Tool list
@@ -96,8 +96,8 @@ def write():
                         logging.info(f"Heard: {transcript}")
 
                         if TRIGGER_WORD.lower() in transcript.lower():
-                            logging.info(f"🗣 Triggered by: {transcript}")
-                            speak_text("Yes sir?")
+                            logging.info(f"Triggered by: {transcript}")
+                            speak_text("How can i help you sir?")
                             conversation_mode = True
                             last_interaction_time = time.time()
                         else:
@@ -110,7 +110,7 @@ def write():
                         logging.info(f"Command: {command}")
 
                         if EXIT_KEYWORD.lower() in command.lower():
-                            logging.info(f"🔕 Exit keyword '{EXIT_KEYWORD}' detected. Exiting conversation mode.")
+                            logging.info(f"Exit keyword '{EXIT_KEYWORD}' detected. Exiting conversation mode.")
                             speak_text("Going to standby, sir.")
                             conversation_mode = False
                             continue 
