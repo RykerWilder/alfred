@@ -90,7 +90,7 @@ def write():
             while True:
                 try:
                     if not conversation_mode:
-                        logging.info("Listening for wake word...")
+                        logging.info("Listening for trigger word...")
                         audio = recognizer.listen(source, timeout=10)
                         transcript = recognizer.recognize_google(audio)
                         logging.info(f"Heard: {transcript}")
@@ -101,7 +101,7 @@ def write():
                             conversation_mode = True
                             last_interaction_time = time.time()
                         else:
-                            logging.debug("Wake word not detected, continuing...")
+                            logging.debug("Trigger word not detected, continuing...")
 
                     else:
                         logging.info("Listening for next command...")
@@ -110,7 +110,7 @@ def write():
                         logging.info(f"Command: {command}")
 
                         if os.getenv("STANDBY_KEYWORD").lower() in command.lower():
-                            logging.info(f"Exit keyword detected. Exiting conversation mode.")
+                            logging.info(f"Standy keyword detected. Exiting conversation mode.")
                             speak_text("Going to standby, sir.")
                             conversation_mode = False
                             continue 
