@@ -7,13 +7,16 @@ import speech_recognition as sr
 from langchain_ollama import ChatOllama, OllamaLLM
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate
+from modules.wrapper import get_tools
 
 # importing modules
 from modules.network import Network
+from modules.time import Time
+
 
 #instances
 net = Network()
-time = Time()
+clock = Time()
 
 
 load_dotenv()
@@ -26,7 +29,7 @@ def load_system_prompt():
 MIC_INDEX = None
 TRIGGER_WORD = "alfred"
 CONVERSATION_TIMEOUT = 20
-EXIT_KEYWORD = "timeout"
+TIMEOUT_KEYWORD = "standby"
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -40,9 +43,8 @@ mic = sr.Microphone(device_index=MIC_INDEX)
 llm = ChatOllama(model=os.getenv("OLLAMA_MODEL"), reasoning=False)
 
 
-# Tool list
-tools = [get_time, arp_scan_terminal, read_text_from_latest_image, duckduckgo_search_tool, matrix_mode, take_screenshot]
-
+# Tools
+tools = get_tools(net, clock)
 
 # Tool-calling prompt
 system_prompt = load_system_prompt()
@@ -58,7 +60,7 @@ prompt = ChatPromptTemplate.from_messages(
 
 # Agent + executor
 agent = create_tool_calling_agent(llm=llm, tools=tools, prompt=prompt)
-executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
 
 
 # TTS setup
@@ -138,7 +140,7 @@ def write():
                         )
                         conversation_mode = False
                 except sr.UnknownValueError:
-                    logging.warning("⚠️ Could not understand audio.")
+                    logging.warning("Could not understand audio.")
                 except Exception as e:
                     logging.error(f"Error during recognition or tool call: {e}")
                     time.sleep(1)
