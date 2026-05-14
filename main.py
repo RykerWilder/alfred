@@ -8,13 +8,12 @@ from langchain_ollama import ChatOllama, OllamaLLM
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate
 
-# importing tools
-from tools.time import get_time
-from tools.OCR import read_text_from_latest_image
-from tools.arp_scan import arp_scan_terminal
-from tools.duckduckgo import duckduckgo_search_tool
-from tools.matrix import matrix_mode
-from tools.screenshot import take_screenshot
+# importing modules
+from modules.network import Network
+
+#instances
+net = Network()
+time = Time()
 
 
 load_dotenv()
