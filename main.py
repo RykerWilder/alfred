@@ -29,7 +29,6 @@ def load_system_prompt():
 MIC_INDEX = None
 TRIGGER_WORD = "alfred"
 CONVERSATION_TIMEOUT = 20
-TIMEOUT_KEYWORD = "standby"
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -110,8 +109,8 @@ def write():
                         command = recognizer.recognize_google(audio)
                         logging.info(f"Command: {command}")
 
-                        if EXIT_KEYWORD.lower() in command.lower():
-                            logging.info(f"Exit keyword '{EXIT_KEYWORD}' detected. Exiting conversation mode.")
+                        if os.getenv("STANDBY_KEYWORD").lower() in command.lower():
+                            logging.info(f"Exit keyword detected. Exiting conversation mode.")
                             speak_text("Going to standby, sir.")
                             conversation_mode = False
                             continue 
@@ -121,13 +120,9 @@ def write():
                         content = response["output"]
                         logging.info(f"Agent responded: {content}")
 
-                        print("Jarvis:", content)
+                        print("Alfred:", content)
                         speak_text(content)
                         last_interaction_time = time.time()
-
-                        if time.time() - last_interaction_time > CONVERSATION_TIMEOUT:
-                            logging.info("Timeout: Returning to wake word mode.")
-                            conversation_mode = False
 
                 except sr.WaitTimeoutError:
                     logging.warning("Timeout waiting for audio.")
