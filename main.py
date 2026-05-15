@@ -25,17 +25,11 @@ def load_system_prompt():
     with open('./system_prompt.txt', 'r') as f:
         return f.read().strip()
 
-
-MIC_INDEX = None
-TRIGGER_WORD = "alfred"
-CONVERSATION_TIMEOUT = 20
-
-
 logging.basicConfig(level=logging.DEBUG)
 
 
 recognizer = sr.Recognizer()
-mic = sr.Microphone(device_index=MIC_INDEX)
+mic = sr.Microphone(device_index=os.getenv("MIC_INDEX"))
 
 
 # Initialize LLM
@@ -95,7 +89,7 @@ def write():
                         transcript = recognizer.recognize_google(audio)
                         logging.info(f"Heard: {transcript}")
 
-                        if TRIGGER_WORD.lower() in transcript.lower():
+                        if os.getenv("TRIGGER_WORD").lower() in transcript.lower():
                             logging.info(f"Triggered by: {transcript}")
                             speak_text("How can i help you sir?")
                             conversation_mode = True
@@ -128,7 +122,7 @@ def write():
                     logging.warning("Timeout waiting for audio.")
                     if (
                         conversation_mode
-                        and time.time() - last_interaction_time > CONVERSATION_TIMEOUT
+                        and time.time() - last_interaction_time > os.getenv("CONVERSATION_TIMEOUT")
                     ):
                         logging.info(
                             "No input in conversation mode. Returning to wake word mode."
