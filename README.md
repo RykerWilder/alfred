@@ -16,9 +16,9 @@ git clone https://github.com/RykerWilder/jarvis
 cd alfred
 ```
 
-3. Run the installer
+3. Run setup script
 ```bash
-bash installer.sh
+bash setup.sh
 ```
 
 Now you are ready to use Alfred, run `python3 main.py`.
